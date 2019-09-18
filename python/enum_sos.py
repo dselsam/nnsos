@@ -8,7 +8,7 @@ import math
 import functools
 import util
 
-def enum_pq_degrees(max_degree):
+def enum_qp_degrees(max_degree):
     p_degrees_cache = {}
 
     def enum_p_degrees(d_rest):
@@ -27,7 +27,7 @@ def enum_pq_degrees(max_degree):
             yield q_degree, p_degrees
 
 
-def enum_pq(ipolys, max_degree, max_datapoints):
+def enum_qps(ipolys, max_degree, max_datapoints):
     """
     Enumerates sufficient information to generate (cyclic) sum-of-squares (SOS)
     problems.
@@ -37,11 +37,21 @@ def enum_pq(ipolys, max_degree, max_datapoints):
     - max_degree: max degree of the _expanded_ polynomial
     - max_datapoints: max number of datapoints to generate
 
-    Returns: list of (p, q) pairs, where:
-    - `util.csum(xs, p * q**2)` is the input to an SOS problem
-    - some representation of `p * q**2` is a sufficient "witness" to solve
+    Returns: list of (q, p) pairs, where:
+    - `util.csum(xs, q**2 * p)` is the input to an SOS problem
+    - some representation of `q**2 * p` is a sufficient "witness" to solve
     """
-    pass
+    n_datapoints = 0
+    for q_degree, p_degrees in enum_qp_degrees(max_degree):
+        for q in ipolys[(q_degree, False)]:
+            seen_ps = set()
+            for ps in itertools.product(*[ipolys[(p_degree, True)] for p_degree in p_degrees]):
+                ps = sorted(ps) # so [x, y, x] is detected as the same as [x, x, y]
+                if str(ps) not in seen_ps: # list is not hashable
+                    yield q, ps
+                    seen_ps.add(str(ps))
+                    n_datapoints += 1
+                    if max_datapoints is not None and n_datapoints >= max_datapoints: break
 
 if __name__ == "__main__":
     pass
