@@ -92,6 +92,6 @@ if __name__ == "__main__":
 
     print("Writing to %s..." % opts.out_filename)
     with gzip.open(opts.out_filename, 'wb') as f:
-        pickle.dump((stats, ipolys), f)
+        pickle.dump((xs, stats, ipolys), f)
 
     print("DONE")
