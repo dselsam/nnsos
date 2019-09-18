@@ -1,4 +1,7 @@
 import sympy as sp
+import functools
+import operator
+import collections
 
 def mkVars(names):
     return [sp.Symbol(name, real=True) for name in names]
@@ -51,3 +54,6 @@ def contains_negation(e):
         elif t[0] not in ["integer", "symbol"]:
             q.extend(t[1:])
     return False
+
+def prod(xs):
+    return functools.reduce(operator.mul, xs, 1)
