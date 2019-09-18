@@ -8,9 +8,17 @@ import math
 import functools
 import util
 
-# 'umonomials' stands for 'unit monomials', i.e. monomials with coefficient 1.
-# this enumerates all monomials over `xs` upto degree `max_degree`
 def enum_umonomials(xs, max_degree):
+    """
+    Enumerates all unit monomials upto given degree.
+
+    Args:
+    - xs (list of sympy symbols): the variables composing the monomials
+    - max_degree (int): the maximum degree of the monomials
+
+    Returns:
+    - List of unit monomials (as sympy terms).
+    """
     cache = {}
     def enum_umonomials_core(idx, d_rest):
         if idx == len(xs) or d_rest == 0: return [1]
@@ -22,17 +30,21 @@ def enum_umonomials(xs, max_degree):
             return result
     return enum_umonomials_core(0, max_degree)
 
-# 'ipolys' stands for 'irreducible polynomials'.
-# this enumerates _some_ irreducible polynomials upto degree `max_degree`
-# specifically, it considers only irreducible polynomials with:
-# - upto `max_summands` summands
-# - coefficients with magnitude <= `max_coeff`
-# For convenience, if `max_total` is not None,
-# it terminates after `max_total` such polynomials have been generated.
-# returns:
-# - stats  : String -> Int # mainly for tuning the generation parameters)
-# - ipolys : (degree : Int) x (def_nneg : Bool) -> Set SympyTerms
 def enum_ipolys(xs, max_degree, max_summands, max_coeff, max_ipolys):
+    """
+    Enumerates _some_ irreducible polynomials upto degree `max_degree`.
+
+    Args:
+    - xs (list of sympy symbols): the variables composing the monomials
+    - max_degree (int): the maximum degree of the monomials
+    - max_summands (int): the maximum number of summands in a polynomial
+    - max_coeff (int): the maximum coefficient magnitude of a monomial
+    - max_ipolys (int): the maximum number of irreducible polynomials to generate
+
+    Returns:
+    - stats (dict): statistics of the generation process
+    - ipolys (dict): maps (degree, def_nneg) to a set of irreducible polynomials
+    """
     stats = collections.defaultdict(int)
     ipolys = collections.defaultdict(set)
 
@@ -55,9 +67,6 @@ def enum_ipolys(xs, max_degree, max_summands, max_coeff, max_ipolys):
             if max_ipolys is not None and stats['n_ipolys'] >= max_ipolys: break
 
     return stats, ipolys
-
-def enum_sos(xs, ipolys, max_degree, max_datapoints):
-    raise Exception("TODO(dselsam): enumerate p, q, take cyclic sum and expand")
 
 if __name__ == "__main__":
     import argparse
