@@ -1,2 +1,3 @@
 # nnsos
-Neural networks for (cyclic) sum-of-squares decomposition.
+
+Synthetic data for (cyclic) sum-of-squares decomposition problems.
