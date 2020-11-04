@@ -62,9 +62,8 @@ def enum_ipolys(xs, max_degree, max_summands, max_coeff, max_ipolys):
                     stats['n_new_%d' % d_ipoly] += 1
                     ipolys[(d_ipoly, def_nneg)].add(ipoly)
                     stats['n_ipolys'] += 1
-                    if stats['n_ipolys'] > 0 and stats['n_ipolys'] % 1000 == 0:
-                        print(dict(stats))
-            if max_ipolys is not None and stats['n_ipolys'] >= max_ipolys: break
+                    if stats['n_ipolys'] > 0 and stats['n_ipolys'] % 1000 == 0: print(dict(stats))
+                    if max_ipolys is not None and stats['n_ipolys'] >= max_ipolys: return stats, ipolys
 
     return stats, ipolys
 
