@@ -60,7 +60,6 @@ if __name__ == "__main__":
     parser.add_argument('--out_filename', action='store', dest='out_filename', type=str, default=None)
     parser.add_argument('--n_datapoints', action='store', dest='n_datapoints', type=int, default=1)
     parser.add_argument('--max_degree', action='store', dest='max_degree', type=int, default=8)
-    parser.add_argument('--max_ps', action='store', dest='max_ps', type=int, default=10)
     opts = parser.parse_args()
 
     if not os.path.exists(opts.in_filename): raise Exception("in_filename %s does not exist" % opts.in_filename)
@@ -71,15 +70,14 @@ if __name__ == "__main__":
 
     if opts.out_filename is None:
         opts.out_filename = "ps__in_filename=%s_max_degree=%d_max_ps=%d" \
-                            % (opts.in_filename, opts.max_degree, opts.max_qps)
+                            % (opts.in_filename, opts.max_degree, opts.n_datapoints)
+
+    from tqdm import tqdm
 
     print("Writing to %s..." % opts.out_filename)
     with gzip.open(opts.out_filename, 'wb') as f:
         i = 0
-        for qps in enum_factors(ipolys=ipolys, max_degree=opts.max_degree, max_ps=opts.max_ps):
-            if i == opts.n_datapoints: break
-            print("[%4s] " % i, qps)
+        for qps in tqdm(enum_factors(ipolys=ipolys, max_degree=opts.max_degree, max_ps=opts.n_datapoints)):
             pickle.dump(qps, f)
-            i += 1
 
     print("DONE")
