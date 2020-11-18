@@ -49,7 +49,7 @@ def enum_qps(ipolys, max_degree, max_qps):
         for q in ipolys[(q_degree, False)]:
             seen_p = set()
             for ps in itertools.product(*[ipolys[(p_degree, True)] for p_degree in p_degrees]):
-                if len(set(ps)) < len(ps): break
+                if len(set(ps)) < len(ps): continue
                 p = util.prod(ps) # we use this as a convenient way to sort factors
                 if p not in seen_p:
                     yield q, list(ps)
@@ -79,8 +79,10 @@ if __name__ == "__main__":
     from tqdm import tqdm
 
     print("Writing to %s..." % opts.out_filename)
+    i = 0
     with gzip.open(opts.out_filename, 'wb') as f:
         for qps in tqdm(enum_qps(ipolys=ipolys, max_degree=opts.max_degree, max_qps=opts.n_datapoints)):
+            i += 1
             pickle.dump(qps, f)
 
-    print("DONE")
+    print("DONE %d" % i)
